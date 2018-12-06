@@ -1,0 +1,48 @@
+<div class="container-fluid">
+  <div class="row" style="height: 100vh;">
+
+    <app-sidebar></app-sidebar>
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">Detail</h1>
+        <!--<div class="btn-toolbar mb-2 mb-md-0">-->
+        <!--<div class="btn-group mr-2">-->
+        <!--<button class="btn btn-sm btn-outline-secondary">Share</button>-->
+        <!--<button class="btn btn-sm btn-outline-secondary">Export</button>-->
+        <!--</div>-->
+        <!--<button class="btn btn-sm btn-outline-secondary dropdown-toggle">-->
+        <!--<span data-feather="calendar"></span>-->
+        <!--This week-->
+        <!--</button>-->
+        <!--</div>-->
+      </div>
+
+      <div *ngIf="class | async as c">
+        <h3>"{{ c.getName() }}"</h3>
+        <div><label>Duplicate lines: </label>{{ c.getDuplicateLines() }}</div>
+        <div><label>Duplicate percentage: </label>{{ c.getDuplicatePercentage() }}</div>
+        <div>
+          <h5>Clones</h5>
+          <div class="table-responsive">
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+              <thead>
+              <tr>
+                <th>Type</th>
+                <th>Uri</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let c of c.getClones()">
+                <td>{{ c.getType() }}</td>
+                <td><a [routerLink]="['/detail', c.getLoc().getUri()]">{{ c.getLoc().getUri() }}</a></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>

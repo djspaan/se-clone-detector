@@ -1,0 +1,43 @@
+<div class="container-fluid">
+  <div class="row" style="height: 100vh;">
+
+    <app-sidebar></app-sidebar>
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">Overview</h1>
+        <!--<div class="btn-toolbar mb-2 mb-md-0">-->
+          <!--<div class="btn-group mr-2">-->
+            <!--<button class="btn btn-sm btn-outline-secondary">Share</button>-->
+            <!--<button class="btn btn-sm btn-outline-secondary">Export</button>-->
+          <!--</div>-->
+          <!--<button class="btn btn-sm btn-outline-secondary dropdown-toggle">-->
+            <!--<span data-feather="calendar"></span>-->
+            <!--This week-->
+          <!--</button>-->
+        <!--</div>-->
+      </div>
+
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Clones</th>
+            <th>Duplicate lines</th>
+            <th>Relative Duplication</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let c of classes | async">
+            <td><a [routerLink]="['/detail', c.getLoc().getUri()]">{{ c.getName() }}</a></td>
+            <td>{{ c.getClones().length }}</td>
+            <td>{{ c.getDuplicateLines() }}</td>
+            <td>{{ c.getDuplicatePercentage() }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>
