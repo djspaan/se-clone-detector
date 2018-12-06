@@ -1,0 +1,24 @@
+{
+  "classes": [
+    {
+      "content": "public class EmptyClass \n {}",
+      "clones": [
+        {
+          "loc": {
+            "uri": "exampleproject://ExampleClass/...",
+            "offset": 10,
+            "length": 5
+          },
+          "type": 1
+        }
+      ],
+      "duplicateLines": 10,
+      "duplicatePercentage": 10.1
+    }
+  ],
+  "stats": {
+    "duplicateLinesPercentage": 10.1,
+    "numberOfClones": 20,
+    "numberOfClassesWithClones": 20
+  }
+}

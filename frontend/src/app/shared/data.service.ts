@@ -21,7 +21,7 @@ export class DataService {
     for (let i = 0; i < 100; i++) {
       classes.push(
         new Class(
-          new Loc('exampleproject://ExampleClass/...', 10, 5),
+          new Loc('exampleproject://ExampleClass' + i + '/...', 10, 5),
           'public class EmptyClass \n {}',
           [new Clone(
             1,

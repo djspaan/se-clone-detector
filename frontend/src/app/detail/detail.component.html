@@ -19,9 +19,18 @@
       </div>
 
       <div *ngIf="class | async as c">
-        <h3>"{{ c.getName() }}"</h3>
-        <div><label>Duplicate lines: </label>{{ c.getDuplicateLines() }}</div>
-        <div><label>Duplicate percentage: </label>{{ c.getDuplicatePercentage() }}</div>
+        <h3>{{ c.getName() }}</h3>
+        <hr>
+        <div class="row">
+          <div class="col-md-6">
+            <div><label>Duplicate lines: </label>{{ c.getDuplicateLines() }}</div>
+            <div><label>Duplicate percentage: </label>{{ c.getDuplicatePercentage() }}</div>
+          </div>
+          <div class="col-md-6">
+            <code>{{ c.getContent() }}</code>
+          </div>
+        </div>
+        <hr>
         <div>
           <h5>Clones</h5>
           <div class="table-responsive">
