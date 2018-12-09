@@ -9,6 +9,7 @@ import server::Views;
 Response route(Request r){
 	switch(r.path){
 		case "/src": return viewSrc(r);
+		case "/clones": return viewClones(r);
 	}
 	return jsonResponse(notFound(), (), ("message": "Failed to find route for path", "path": r.path));
 }
