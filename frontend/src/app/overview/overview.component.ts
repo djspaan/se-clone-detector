@@ -14,7 +14,7 @@ export class OverviewComponent implements OnInit {
   constructor(private dataService: DataService) { }
 
   ngOnInit() {
-    this.classes = this.dataService.all();
+    this.classes = this.dataService.allClasses();
   }
 
 }

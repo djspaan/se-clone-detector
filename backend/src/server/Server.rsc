@@ -9,7 +9,8 @@ import server::Routes;
 loc defaultServer = |http://localhost:8082|;
 
 
-void startServer(loc server = defaultServer){
+void startServer(){
+	server = defaultServer;
 	stopServer(server=server);
 	serve(server,
 		Response (Request r){
@@ -19,6 +20,8 @@ void startServer(loc server = defaultServer){
 	println("Started server");
 	println("Listening: <server>");
 }
+
+void startServer(loc server = defaultServer){ throw ArgumentException("Not implemented :("); }
 
 void stopServer(loc server = defaultServer){
 	try {

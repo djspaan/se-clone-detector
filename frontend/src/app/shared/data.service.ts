@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 
 import {Observable, of} from 'rxjs';
-import {find, map} from 'rxjs/operators';
+import {find, map, mergeMap} from 'rxjs/operators';
 
 import {Class} from './class';
 import {Clone} from './clone';
@@ -13,6 +13,9 @@ import {Loc} from './loc';
 })
 export class DataService {
   private classes: Observable<Class[]>;
+  private clones: Observable<Clone[]>;
+
+  private url = "http://localhost:8082/clones?project=";
 
   constructor(private http: HttpClient) { this.init(); }
 
@@ -37,10 +40,12 @@ export class DataService {
 
   init() {
     this.classes = of(DataService.getSeed());
-    // let data = this.http.get(this.url).subscribe((data) => { console.log(data); });
+    let data = this.http.get(this.url + "project://smallsql0.21_src").pipe(
+        mergeMap(x => x.map(x => x.locs))
+    ).subscribe(x => console.log(x));
   }
 
-  all(): Observable<Class[]> {
+  allClasses(): Observable<Class[]> {
     return this.classes;
   }
 

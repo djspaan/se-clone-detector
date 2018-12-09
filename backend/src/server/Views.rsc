@@ -15,10 +15,6 @@ map[str, str] DEFAULT_HEADERS = (
 	"Access-Control-Allow-Origin": "*"
 );
 
-str resolve(Request r, str path, map[str, str] query=()){
-	str qstr = ("" | it + (it == "" ? "?" : "&") + k + "=" + query[k] | k <- query); 
-	return "http://<r.headers["host"]><path><qstr>";
-}
 
 Response viewSrc(Request r){
 	if("uri" in r.parameters){
@@ -33,7 +29,8 @@ Response viewSrc(Request r){
 			path = |nil://placeholder|;
 			path.uri = r.parameters["uri"];
 		}
-		return jsonResponse(ok(), DEFAULT_HEADERS, ("body": readFile(path)));
+		println(path);
+		return response(ok(), "text/plain", DEFAULT_HEADERS, readFile(path));
 	}
 	return jsonResponse(badRequest(), DEFAULT_HEADERS, ("message": "expected \'uri\' query parameter"));
 }
@@ -60,7 +57,7 @@ Response viewClasses(Request r){
 		if(path.scheme == "project"){
 			set[Declaration] asts = createAstsFromEclipseProjectCached(path);
 			value jsondata = (c.src.uri: (
-						"srcUrl": resolve(r, "/src", query=("uri": c.src.uri))
+						"srcUrl": url("/src", query=("uri": c.src.uri))
 					) | c <- asts);
 			return jsonResponse(ok(), DEFAULT_HEADERS, jsondata);
 		}
@@ -68,11 +65,48 @@ Response viewClasses(Request r){
 	return jsonResponse(badRequest(), DEFAULT_HEADERS, ("message": "expected \'project\' query parameter"));
 }
 
-Response index(Request r){
-	println(r.headers);
+Response viewProjects(Request r){
 	jsondata = ("projects": (project.uri: (
-						"clonesUrl": resolve(r, "/clones", query=("project": project.uri)), 
-						"classesUrl": resolve(r, "/classes", query=("project": project.uri)) 
+						"clonesUrl": url("/clones", query=("project": project.uri)), 
+						"classesUrl": url("/classes", query=("project": project.uri)) 
 					) | loc project <- projects()));
 	return jsonResponse(ok(), DEFAULT_HEADERS, jsondata);
 }
+
+Response apiBrowser(Request r){
+	html = "
+	\<html\>
+	\<head\>
+	\<meta charset=\"utf-8\"\>
+	\</head\>
+	\<body style=\"margin:10px;font-family:sans-serif;\"\>
+	\<h2\>API browser\<h2\>
+	\<div id=\"wrapper\"\>
+	\<input readonly id=\"location\" style=\"width: 100%; height:35px; margin: 5px 0; border-radius:5px; border:1px solid grey; padding: 5px 10px; font-size:20px\"\> 
+	\<iframe id=\"browser\" src=\"/projects\" style=\"border:none;width:100%;height:calc(100% - 65px);background-color:#eee;\"\>\</iframe\>
+	\</div\>
+	\</body\>
+	\<script\>
+	function replacer(k, v){
+		if(typeof v !== `string`) return v;
+		if(!k.endsWith(`Url`)){
+			const div = document.createElement(`div`);
+			div.innerText = v;
+			return div.innerHTML;			
+		}
+		console.log(`${v}`);
+		return `\<a href=${v}\>${v}\</a\>`;
+	}
+	document.querySelector(\'#browser\').onload = (e) =\>{
+		try{
+			const jsonText = JSON.stringify(JSON.parse(e.target.contentDocument.body.innerText), replacer, \'  \');
+			e.target.contentDocument.querySelector(\'pre\').innerHTML = jsonText;
+		} catch(e){}
+		document.querySelector(\'#location\').value = e.target.contentWindow.location.href;
+	}
+	\</script\>
+	\</html\>
+	";
+	return response(ok(), "text/html", DEFAULT_HEADERS, html);
+}
+

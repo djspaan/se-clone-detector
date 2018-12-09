@@ -13,7 +13,7 @@ import {Observable} from 'rxjs';
   styleUrls: ['./detail.component.scss']
 })
 export class DetailComponent implements OnInit {
-  class: Observable<Class[]>;
+  class: Observable<Class>;
 
   constructor(private route: ActivatedRoute, private router: Router, private dataService: DataService) { }
 
