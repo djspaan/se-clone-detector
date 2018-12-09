@@ -13,7 +13,6 @@ data Clone = clone(int \type, int weight, set[loc] locs);
 
 map[tuple[int, loc], map[value, set[loc]]] CACHE = ();
 
-
 list[Clone] type1OrderedClones(loc project, set[Declaration] asts = {}) = [];
 
 list[Clone] type2OrderedClones(loc project, set[Declaration] asts = {}){
