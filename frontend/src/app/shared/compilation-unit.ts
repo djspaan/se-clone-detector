@@ -1,7 +1,9 @@
 import {Loc} from './loc';
 import {Duplication} from "./duplication";
+import CONFIG from "../app.config";
 
 export class CompilationUnit {
+  readonly id: string;
   readonly loc: Loc;
   readonly srcUrl: string;
   content: string = '';
@@ -9,9 +11,19 @@ export class CompilationUnit {
   clones: CompilationUnit[];
   duplicateLines: number = 0;
 
-  constructor(loc: Loc, srcUrl: string) {
+  constructor(id: string, loc: Loc, srcUrl: string) {
+    this.id = id;
     this.loc = loc;
     this.srcUrl = srcUrl;
+  }
+
+  getName(): string {
+    let splits = this.loc.uri.split('/');
+    return splits[splits.length-1].replace('.java', '');
+  }
+
+  getFullName(): string {
+    return this.loc.uri.replace(CONFIG.PROJECT, '');
   }
 
   getContentLines(): string[] {
@@ -32,6 +44,5 @@ export class CompilationUnit {
     }
     return 0;
   }
-
 
 }

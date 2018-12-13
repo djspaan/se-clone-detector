@@ -13,6 +13,9 @@ import {OverviewComponent} from './overview/overview.component';
 import {SidebarComponent} from './sidebar/sidebar.component';
 import {DataService} from './shared/data.service';
 import { DetailComponent } from './detail/detail.component';
+import {D3_DIRECTIVES, D3Service} from "./d3";
+import {GraphComponent} from "./visuals/graph/graph.component";
+import {SHARED_VISUALS} from "./visuals/shared";
 
 
 @NgModule({
@@ -21,7 +24,10 @@ import { DetailComponent } from './detail/detail.component';
     HeaderComponent,
     OverviewComponent,
     SidebarComponent,
-    DetailComponent
+    DetailComponent,
+    GraphComponent,
+    ...SHARED_VISUALS,
+    ...D3_DIRECTIVES
   ],
   imports: [
     BrowserModule,
@@ -31,7 +37,8 @@ import { DetailComponent } from './detail/detail.component';
     DataTablesModule
   ],
   providers: [
-    DataService
+    DataService,
+    D3Service
   ],
   bootstrap: [AppComponent]
 })

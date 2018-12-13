@@ -2,45 +2,33 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 
 import {Observable} from 'rxjs';
-import {flatMap, map} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 
 import {Loc} from './loc';
 import {CompilationUnit} from "./compilation-unit";
 import {Duplication} from "./duplication";
 import {zip} from "rxjs/internal/observable/zip";
+import CONFIG from "../app.config";
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-  compilationUnits: Observable<CompilationUnit[]>;
-  duplications: Observable<any>;
-  dataUnit: Observable<any>;
-
+  dataUnit: Observable<CompilationUnit[]>;
   private url = "http://localhost:8082/";
-  private project = "project://smallsql0.21_src";
+  private project = CONFIG.PROJECT;
 
   constructor(private http: HttpClient) { this.init(); }
 
   init() {
-    this.compilationUnits = this.http.get<any>(this.url + "classes?project=" + this.project).pipe(
-      map(data => data.classes.map(c => new CompilationUnit(new Loc('', '', c.uri, 0, 0), c.srcUrl))),
-      map(classes => {
-        for (let c of classes) {
-          this.http.get(c.srcUrl, {responseType: 'text'}).subscribe(src => c.content = src);
-        }
-        return classes;
-      })
-    );
+    let compilationUnits = this.getCompilationUnits();
+    let duplications = this.getDuplications();
 
-    this.duplications = this.http.get<Duplication[]>(this.url + "clones?project=" + this.project).pipe(
-      map(data => data.map(d => {
-        let locs = d.locs.map(l => new Loc(l.fileUrl, l.fragmentUrl, l.uri, l.offset, l.length));
-        return new Duplication(d.type, d.weight, locs);
-      }))
-    );
+    this.dataUnit = this.zipClassesAndDuplications(compilationUnits, duplications);
+  }
 
-    this.dataUnit = zip(this.compilationUnits, this.duplications).pipe(
+  zipClassesAndDuplications(compilationUnits: Observable<CompilationUnit[]>, duplications: Observable<Duplication[]>) {
+    return zip(compilationUnits, duplications).pipe(
       map(([classes, duplications]) => {
         for (const cu of classes) {
           cu.duplications = duplications.filter(d => d.locs.filter(l => l.uri == cu.loc.uri).length > 0);
@@ -51,10 +39,31 @@ export class DataService {
         for (const cu of classes) {
           let duplicationsUris =  (<any>cu.duplications).map(d => d.locs.map(l => l.uri)).flat().filter(uri => uri != cu.loc.uri);
           duplicationsUris = duplicationsUris.filter((item, pos) => {return duplicationsUris.indexOf(item) == pos;});
-          cu.clones = duplicationsUris.map(du => classes.find(c => c.loc.uri == du));
+          cu.clones = duplicationsUris.map(du => classes.find(c => c.loc.uri == du)).filter(c => c != undefined);
         }
         return classes;
       })
+    );
+  }
+
+  getCompilationUnits(): Observable<CompilationUnit[]> {
+    return this.http.get<any>(this.url + "classes?project=" + this.project).pipe(
+      map(data => data.classes.map((c,i) => new CompilationUnit('cu'+ i, new Loc('', '', c.uri, 0, 0), c.srcUrl))),
+      map(classes => {
+        for (let c of classes) {
+          this.http.get(c.srcUrl, {responseType: 'text'}).subscribe(src => c.content = src);
+        }
+        return classes;
+      })
+    );
+  }
+
+  getDuplications(): Observable<Duplication[]> {
+    return this.http.get<Duplication[]>(this.url + "clones?project=" + this.project).pipe(
+      map(data => data.map((d,i) => {
+        let locs = d.locs.map(l => new Loc(l.fileUrl, l.fragmentUrl, l.uri, l.offset, l.length));
+        return new Duplication('d' + i, d.type, d.weight, locs);
+      }))
     );
   }
 
