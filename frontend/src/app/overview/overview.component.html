@@ -29,11 +29,14 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let c of classes | async">
-            <td><a [routerLink]="['/detail', c.getLoc().getUri()]">{{ c.getName() }}</a></td>
-            <td>{{ c.getClones().length }}</td>
+          <tr *ngFor="let c of classes">
+            <td><a [routerLink]="['/detail', c.loc.uri]">{{ c.loc.uri }}</a></td>
+            <td>{{ c.clones.length }}</td>
             <td>{{ c.getDuplicateLines() }}</td>
             <td>{{ c.getDuplicatePercentage() }}</td>
+            <!--<td>{{ c.getClones().length }}</td>-->
+            <!--<td>{{ c.getDuplicateLines() }}</td>-->
+            <!--<td>{{ c.getDuplicatePercentage() }}</td>-->
           </tr>
           </tbody>
         </table>

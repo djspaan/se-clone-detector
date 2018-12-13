@@ -1,15 +1,15 @@
 export class Loc {
+  readonly fileUrl: string;
+  readonly fragmentUrl: string;
+  readonly offset: number;
+  readonly length: number;
   readonly uri: string;
-  private readonly offset: number;
-  private readonly length: number;
 
-  constructor(uri: string, offset: number, length: number) {
+  constructor(fileUrl: string, fragmentUrl: string, uri: string, offset: number, length: number) {
+    this.fileUrl = fileUrl;
+    this.fragmentUrl = fragmentUrl;
     this.uri = uri;
     this.offset = offset;
     this.length = length;
-  }
-
-  getUri(): string {
-    return this.uri;
   }
 }

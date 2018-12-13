@@ -56,9 +56,10 @@ Response viewClasses(Request r){
 		path.uri = r.parameters["project"];
 		if(path.scheme == "project"){
 			set[Declaration] asts = createAstsFromEclipseProjectCached(path);
-			value jsondata = (c.src.uri: (
+			value jsondata = ("classes": [(
+			            "uri": c.src.uri,
 						"srcUrl": url("/src", query=("uri": c.src.uri))
-					) | c <- asts);
+					 )| c <- asts]);
 			return jsonResponse(ok(), DEFAULT_HEADERS, jsondata);
 		}
 	}

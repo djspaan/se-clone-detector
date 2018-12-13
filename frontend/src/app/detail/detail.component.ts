@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
-import { switchMap } from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
 
 import {DataService} from '../shared/data.service';
-import {Class} from '../shared/class';
 import {Observable} from 'rxjs';
+import {CompilationUnit} from "../shared/compilation-unit";
+import {Subject} from "rxjs/internal/Subject";
 
 @Component({
   selector: 'app-detail',
@@ -13,14 +14,18 @@ import {Observable} from 'rxjs';
   styleUrls: ['./detail.component.scss']
 })
 export class DetailComponent implements OnInit {
-  class: Observable<Class>;
+  class: CompilationUnit;
+  dtTrigger: Subject<any> = new Subject();
 
   constructor(private route: ActivatedRoute, private router: Router, private dataService: DataService) { }
 
   ngOnInit() {
-    this.class = this.route.paramMap.pipe(
+    this.route.paramMap.pipe(
       switchMap((params: ParamMap) => this.dataService.byUri(params.get('uri')))
-    );
+    ).subscribe(c => {
+      this.class = c;
+      this.dtTrigger.next();
+    });
   }
 
 }
