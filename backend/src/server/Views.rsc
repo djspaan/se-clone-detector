@@ -12,9 +12,11 @@ import clonedet::ProjectAst;
 
 
 map[str, str] DEFAULT_HEADERS = (
-	"Access-Control-Allow-Origin": "*"
+	"Access-Control-Allow-Origin": "*",
+	"Expires": "Sun, 17 Jan 2038 12:00:00 GMT"
 );
 
+map[loc, str] SOURCE_CACHE = ();
 
 Response viewSrc(Request r){
 	if("uri" in r.parameters){
@@ -29,8 +31,8 @@ Response viewSrc(Request r){
 			path = |nil://placeholder|;
 			path.uri = r.parameters["uri"];
 		}
-		println(path);
-		return response(ok(), "text/plain", DEFAULT_HEADERS, readFile(path));
+		if(path notin SOURCE_CACHE) SOURCE_CACHE[path] = readFile(path);
+		return response(ok(), "text/plain", DEFAULT_HEADERS + ("Cache-Control": "max-age=3600"), SOURCE_CACHE[path]);
 	}
 	return jsonResponse(badRequest(), DEFAULT_HEADERS, ("message": "expected \'uri\' query parameter"));
 }

@@ -7,6 +7,7 @@ import util::Webserver;
 import server::Views;
 
 Response route(Request r){
+	println("REQUEST: <r.path>?<r.parameters["NanoHttpd.QUERY_STRING"]>");
 	switch(r.path){
 		case "/": return apiBrowser(r);
 		case "/projects": return viewProjects(r);
