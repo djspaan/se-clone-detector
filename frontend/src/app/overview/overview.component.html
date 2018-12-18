@@ -6,7 +6,11 @@
     <main role="main">
       <div class="row">
         <div class="col-md-12">
-          <graph *ngIf="visualize" [nodes]="nodes" [links]="links"></graph>
+          <graph #graph *ngIf="visualize" [nodes]="nodes" [links]="links"></graph>
+          <div style="float: right; margin-top: -60px; position: relative;">
+            <button class="graph-control" (click)="graph.fixClasses()" >Fix Cls Nodes</button>
+            <button class="graph-control" (click)="graph.requestFullScreen()" >Fullscreen</button>
+          </div>
         </div>
       </div>
 
@@ -24,7 +28,7 @@
         <!--&lt;!&ndash;</div>&ndash;&gt;-->
       <!--</div>-->
 
-      <div class="table-responsive">
+      <div *ngIf="false" class="table-responsive">
         <table *ngIf="false" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
           <thead>
           <tr>

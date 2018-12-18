@@ -1,6 +1,7 @@
 module clonedet::tests::TestCanonize
 
 import clonedet::tests::util::GenerateCompilationUnit;
+import lang::java::jdt::m3::AST; 
 import clonedet::Canonize;
 import Node;
 import IO;
@@ -43,12 +44,14 @@ tuple[Declaration, Declaration] arbType2Variation(){
 }
 
 
-
+// Test if two type two clones are equivalent in canonical representation
 test bool testCanonize(){
 	for(_ <- [0..10]){
 		<varA, varB> = arbType2Variation();
 		canonicalA = canonize(varA);
 		canonicalB = canonize(varB);
-		return unsetRec(canonicalA) == unsetRec(canonicalB);
+		if(unsetRec(canonicalA) != unsetRec(canonicalB)) 
+			return false;
 	}
+	return true;
 }

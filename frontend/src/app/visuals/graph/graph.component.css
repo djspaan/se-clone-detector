@@ -1,0 +1,6 @@
+svg {
+    width: 100%;
+    min-height: 250px;
+    height: calc(100% - 50px);
+    background: white;
+}

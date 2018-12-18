@@ -5,6 +5,14 @@ code {
 
 .container-fluid {
   max-width: 90vw;
-  max-height: 90vh;
+  max-height: calc(100% - 40px);
   overflow: auto;
+}
+
+.container-fluid.overview {
+  font-size: 2px;
+}
+
+.container-fluid.overview .title {
+  font-size: 7px;
 }
