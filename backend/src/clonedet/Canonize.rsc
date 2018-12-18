@@ -1,7 +1,7 @@
 module clonedet::Canonize
 
 import lang::java::m3::AST;
-
+import IO;
 
 @doc{
 Resolve some ambiguity in lang::java::m3::AST :
@@ -14,8 +14,8 @@ This function normalizes replaces the first variant with the latter.
 }
 Declaration normalizeDeclarations(Declaration d){
 	return visit(d){
-		case declarationStatement(decl)
-			=> expressionStatement(declarationExpression(decl))
+		case declarationStatement(decl, src=src)
+			=> expressionStatement(declarationExpression(decl), src=src)
 	}
 }
 

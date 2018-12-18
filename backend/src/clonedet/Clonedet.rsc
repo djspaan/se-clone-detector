@@ -6,55 +6,79 @@ import lang::java::jdt::m3::AST;
 import Node;
 import List;
 import Set;
+import Type;
 import IO;
 import Exception;
 import util::Math;
+import util::Trie;
 
 data Clone = clone(int \type, int weight, set[loc] locs);
 
-map[tuple[int, loc], map[value, set[loc]]] CACHE = ();
+map[tuple[int, loc], list[Clone]] CACHE = ();
 
 list[Clone] type1OrderedClones(loc project, set[Declaration] asts = {}){
-	dups =  getDuplicationsForAsts(asts);
-	return [clone(1, w, {l | <l, _> <- locs}) | <locs, w> <- getDuplicationsForAsts(asts)];
+	tuple[int, loc] cacheKey = <1, project>;
+	if(cacheKey notin CACHE){
+		dups =  getDuplicationsForAsts(asts);
+		CACHE[cacheKey] = [clone(1, w, {l | <l, _> <- locs}) | <locs, w> <- getDuplicationsForAsts(asts)];
+	}
+	return CACHE[cacheKey];
 }
 
 list[Clone] type2OrderedClones(loc project, set[Declaration] asts = {}){
-	m = type2LocationMapForProject(project, asts = asts);
-	locs = sort({<-treesize(k), m[k]> | k <- m, size(m[k]) > 1});
-	return [clone(2, -x, y) | <x, y> <- locs, -x > 2];
+	tuple[int, loc] cacheKey = <2, project>;
+	if(cacheKey notin CACHE){
+		m = type2LocationMapForProject(project, asts = asts);
+		locs = sort({<-treesize(k), m[k]> | k <- m, size(m[k]) > 1});
+		CACHE[cacheKey] = [clone(2, -x, y) | <x, y> <- locs, -x > 2];
+	}
+	return CACHE[cacheKey];
 }
 
 
 map[value, set[loc]] type2LocationMapForProject(loc project, set[Declaration] asts = {}){
-	tuple[int, loc] cacheKey = <2, project>;
 	
-	if(cacheKey in CACHE) 
-		return CACHE[cacheKey];
 	
 	if(asts == {})
 		asts = createAstsFromEclipseProject(project, true);
 	
 	canonized = {canonize(ast) | ast <- asts};
-	CACHE += (cacheKey: astLocationMap(canonized));
-	return CACHE[cacheKey];
+	return astLocationMap(canonized);
 }
 
 
 // why is this not in the prelude?
 &T getdefault(map[&K, &T] m, &K k, &T def) = k in m ? m[k] : def; 
 
-
 map[value, set[loc]] astLocationMap(set[Declaration] asts){
 	map[value, set[loc]] lmap = ();
+	map[loc, Statement] locStatements = ();
+	Trie trie = newTrie();
 	top-down visit(asts){
-		case Statement d:{
-			Statement clean = unsetRec(d);
-			lmap += (clean: getdefault(lmap, clean, {}) + {d.src});
+		case list[Statement] sts:{
+			list[str] tokens = ["<unsetRec(s)>" |  s <- sts]; 
+			trie = insertSuffixes(trie, tokens, [sts[i].src | i <- [0..size(sts)]]); 
+		}
+		case Statement st:{
+			Statement clean = unsetRec(st);
+			locStatements[st.src] = clean;
+			lmap += (clean: getdefault(lmap, clean, {}) + {st.src});
 		}
 		case Declaration d:{
 			Declaration clean = unsetRec(d);
 			lmap += (clean: getdefault(lmap, clean, {}) + {d.src});
+		}
+	}
+	trie = pruneTrie(trie);
+	visit(trie){ 
+		case \node(toks, vs, d): {
+			for(<list[loc] srcs, int suffix> <- vs, d > 6){
+				fromto = srcs[suffix..][..d];
+				list[Statement] sts = [locStatements[src] | src <- fromto];
+				loc src = fromto[0];
+				src.length = fromto[-1].offset + fromto[-1].length - fromto[0].offset;
+				lmap[sts] = getdefault(lmap, sts, {}) + {src};
+			}
 		}
 	}
 	return lmap;
