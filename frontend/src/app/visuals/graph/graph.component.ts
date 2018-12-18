@@ -1,14 +1,15 @@
 import {
   Component,
+  ElementRef,
   Input,
   ChangeDetectorRef,
   HostListener,
   ChangeDetectionStrategy,
   OnInit,
   AfterViewInit,
-  OnDestroy
+  ViewChild
 } from '@angular/core';
-import { D3Service, ForceDirectedGraph, Node } from '../../d3';
+import {D3Service, ForceDirectedGraph, Node} from '../../d3';
 
 @Component({
   selector: 'graph',
@@ -18,25 +19,36 @@ import { D3Service, ForceDirectedGraph, Node } from '../../d3';
       <g [zoomableOf]="svg">
         <g [linkVisual]="link" *ngFor="let link of links"></g>
         <g [nodeVisual]="node" *ngFor="let node of nodes"
-            [draggableNode]="node" [draggableInGraph]="graph"></g>
+           [draggableNode]="node" [draggableInGraph]="graph"></g>
+      </g>
+      <g>
+        <rect x="30" y="30" width="250" height="100" fill="rgba(255, 255, 255, 0.9)"></rect>
+        <circle cx="50" cy="50" r="10" fill="cyan"></circle>
+        <text x="70" y="55">Classes</text>
+        <circle cx="50" cy="80" r="10" fill="red"></circle>
+        <text x="70" y="85">Type 1 Clones</text>
+        <circle cx="50" cy="110" r="10" fill="green"></circle>
+        <text x="70" y="115">Type 2 Clones</text>
       </g>
     </svg>
   `,
   styleUrls: ['./graph.component.css']
 })
-export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
+
+export class GraphComponent implements OnInit, AfterViewInit {
+  @ViewChild('svg') svgEl: ElementRef;
   @Input('nodes') nodes;
   @Input('links') links;
   graph: ForceDirectedGraph;
-  private _options: { width, height } = { width: 800, height: 600 };
+  private _options: { width, height } = {width: 800, height: 600};
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.graph.initSimulation(this.options);
   }
 
-
-  constructor(private d3Service: D3Service, private ref: ChangeDetectorRef) {}
+  constructor(private d3Service: D3Service, private ref: ChangeDetectorRef) {
+  }
 
   ngOnInit() {
     /** Receiving an initialized simulated graph from our custom d3 service */
@@ -54,6 +66,16 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     this.graph.initSimulation(this.options);
+  }
+
+  fixClasses() {
+    this.graph.fixClasses();
+  }
+
+  requestFullScreen() {
+    const el = this.svgEl.nativeElement;
+    if (el.webkitRequestFullScreen) el.webkitRequestFullScreen();
+    if (el.mozRequestFullScreen) el.mozRequestFullScreen();
   }
 
   get options() {

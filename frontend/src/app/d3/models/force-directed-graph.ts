@@ -4,9 +4,10 @@ import { Node } from './node';
 import * as d3 from 'd3';
 
 const FORCES = {
-  LINKS: 1 / 50,
+  LINKS: 1,
   COLLISION: 1,
-  CHARGE: -1
+  CHARGE: -1,
+  GROUPING: 0.01
 };
 
 export class ForceDirectedGraph{
@@ -15,6 +16,7 @@ export class ForceDirectedGraph{
 
   public nodes: Node[] = [];
   public links: Link[] = [];
+  private classesFixed = true;
 
   constructor(nodes, links, options: { width, height }) {
     this.nodes = nodes;
@@ -38,9 +40,13 @@ export class ForceDirectedGraph{
     this.initLinks();
   }
 
-  initNodes() {
+  initNodes(options: {width: number, height: number}) {
     if (!this.simulation) {
       throw new Error('simulation was not initialized yet');
+    }
+    for(let node of this.nodes){
+      node.x = Math.random() * options.width;
+      node.y = Math.random() * options.height;
     }
 
     this.simulation.nodes(this.nodes);
@@ -54,8 +60,8 @@ export class ForceDirectedGraph{
     this.simulation.force('links',
       d3.forceLink(this.links)
         .id(d => d['id'])
-        .strength(FORCES.LINKS * 10)
-        .distance(link => (<Node> link.source).r + (<Node> link.target).r)
+        .strength(FORCES.LINKS)
+        .distance((d) => ((<Node>d.source).r + (<Node>d.target).r) * 1.6)
     );
   }
 
@@ -67,6 +73,7 @@ export class ForceDirectedGraph{
     /** Creating the simulation */
     if (!this.simulation) {
       const ticker = this.ticker;
+      const collisionForce = d3.forceCollide().strength(0).radius(d => d['r'] + 5).iterations(2);
 
       this.simulation = d3.forceSimulation()
         .force('charge',
@@ -74,17 +81,21 @@ export class ForceDirectedGraph{
             .strength(d => FORCES.CHARGE * d['r'])
         )
         .force('collide',
-          d3.forceCollide()
-            .strength(FORCES.COLLISION)
-            .radius(d => d['r'] + 5).iterations(2)
+          collisionForce
+        )
+        .force('radial',
+            d3.forceRadial(options.height, options.width / 2, options.height / 2)
+              .strength((d: Node) => d.id.startsWith("cu") ? FORCES.GROUPING : 0)
         );
-
+      const nodes = this.nodes;
+      const t0 = Date.now();
       // Connecting the d3 ticker to an angular event emitter
       this.simulation.on('tick', function () {
         ticker.emit(this);
+        collisionForce.strength((500 - 500 / (Date.now() - t0)) * (1/1000) * FORCES.COLLISION);
       });
 
-      this.initNodes();
+      this.initNodes(options);
       this.initLinks();
     }
 
@@ -95,7 +106,23 @@ export class ForceDirectedGraph{
     this.simulation.restart();
   }
 
-  destroy(): void {
-    this.simulation.stop();
+  fixClasses(){
+    if(!this.classesFixed){
+      for(let node of this.nodes){
+        if(node.id.startsWith("cu")){
+          node.fx = node.x;
+          node.fy = node.y;
+        }
+      }
+    }
+    else{
+      for(let node of this.nodes){
+        if(node.id.startsWith("cu")){
+          node.fx = null;
+          node.fy = null;
+        }
+      }
+    }
+    this.classesFixed = !this.classesFixed;
   }
 }

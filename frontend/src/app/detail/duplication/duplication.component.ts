@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {DataService} from "../../shared/data.service";
 import {Subject} from "rxjs/internal/Subject";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
@@ -12,6 +12,7 @@ import {CompilationUnit} from "../../shared/compilation-unit";
   styleUrls: ['./duplication.component.scss']
 })
 export class DuplicationComponent implements OnInit {
+  @ViewChild("wrapper") wrapper;
   duplication: Duplication;
   clones: CompilationUnit[] = [];
   visualize: boolean = false;
@@ -32,5 +33,10 @@ export class DuplicationComponent implements OnInit {
         this.visualize = true;
       });
     });
+  }
+
+  toggleOverview(){
+    this.wrapper.nativeElement.classList.toggle('overview');
+
   }
 }

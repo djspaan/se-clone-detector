@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DataService} from '../shared/data.service';
 import {Subject} from "rxjs/internal/Subject";
 import {CompilationUnit} from "../shared/compilation-unit";
@@ -11,6 +11,7 @@ import {Router} from "@angular/router";
   styleUrls: ['./overview.component.scss']
 })
 export class OverviewComponent implements OnInit, OnDestroy {
+  @ViewChild('graph') graph:ElementRef;
   dtTrigger: Subject<any> = new Subject();
   classes: CompilationUnit[];
   nodes: Node[] = [];
@@ -32,7 +33,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       }
       this.dataService.getDuplications().subscribe(duplications => {
         for (let d of duplications) {
-          let node = new Node(d.id, '', 'red', this.router);
+          let node = new Node(d.id, '', ['orange', 'red', 'green', 'purple'][d.type], this.router);
           node.linkCount = d.getUris().length;
           this.nodes.push(node);
           for (let u of d.getUris()) {

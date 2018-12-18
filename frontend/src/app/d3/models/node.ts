@@ -11,6 +11,10 @@ export class Node implements d3.SimulationNodeDatum {
   fx?: number | null;
   fy?: number | null;
 
+  // hacky stuff for drag and drop
+  _wasFixed?: boolean;
+  _dragging?: boolean;
+
   id: string;
   content: string;
   color: string = 'rgb(0,0,0)';
