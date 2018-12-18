@@ -1,4 +1,5 @@
 import APP_CONFIG from '../../app.config';
+import {Router} from "@angular/router";
 
 export class Node implements d3.SimulationNodeDatum {
   // optional - defining optional implementation properties - required for relevant typing assistance
@@ -12,16 +13,18 @@ export class Node implements d3.SimulationNodeDatum {
 
   id: string;
   content: string;
-  color: string = 'blue';
+  color: string = 'rgb(0,0,0)';
+  router: Router;
   linkCount: number = 0;
 
-  constructor(id, content, color) {
+  constructor(id, content, color, router) {
     this.id = id;
     this.content = content;
     this.color = color;
+    this.router = router;
   }
 
-  normal = () => {
+  normal() {
     return Math.sqrt(this.linkCount / APP_CONFIG.N);
   }
 
@@ -31,6 +34,10 @@ export class Node implements d3.SimulationNodeDatum {
 
   get fontSize() {
     return (30 * this.normal() + 10) + 'px';
+  }
+
+  clicked() {
+    this.router.navigate(['detail', this.id]);
   }
 
   // get color() {

@@ -1,5 +1,5 @@
 const CONFIG = {
-  PROJECT: "project://hsqldb-2.3.1",
+  PROJECT: "project://smallsql0.21_src",
   N: 100,
   SPECTRUM: [
     // "rgb(222,237,250)"
@@ -13,6 +13,6 @@ const CONFIG = {
     // "rgb(0,82,154)"
     // "rgb(0,60,113)"
   ]
-}
+};
 
 export default CONFIG;

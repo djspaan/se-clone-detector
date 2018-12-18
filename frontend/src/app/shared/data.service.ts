@@ -67,10 +67,10 @@ export class DataService {
     );
   }
 
-  byUri(uri: string): Observable<CompilationUnit> {
+  byId(id: string): Observable<CompilationUnit> {
     return this.dataUnit.pipe(
       map( results => {
-        return results.find(c => c.loc.uri === uri);
+        return results.find(c => c.id === id);
       })
     );
   }

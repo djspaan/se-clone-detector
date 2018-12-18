@@ -21,7 +21,7 @@ export class DetailComponent implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.pipe(
-      switchMap((params: ParamMap) => this.dataService.byUri(params.get('uri')))
+      switchMap((params: ParamMap) => this.dataService.byId(params.get('uri')))
     ).subscribe(c => {
       this.class = c;
       this.dtTrigger.next();

@@ -3,6 +3,7 @@ import {DataService} from '../shared/data.service';
 import {Subject} from "rxjs/internal/Subject";
 import {CompilationUnit} from "../shared/compilation-unit";
 import {Node, Link} from "../d3/models";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-overview',
@@ -16,20 +17,20 @@ export class OverviewComponent implements OnInit, OnDestroy {
   links: Link[] = [];
   visualize: boolean = false;
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService, private router: Router) { }
 
   ngOnInit() {
     this.dataService.dataUnit.subscribe(classes => {
       this.classes = classes;
       this.dtTrigger.next();
       for (let c of this.classes) {
-        let node = new Node(c.id, c.getName(), 'blue');
+        let node = new Node(c.id, c.getName(), 'cyan', this.router);
         node.linkCount = c.duplications.length;
         this.nodes.push(node);
       }
       this.dataService.getDuplications().subscribe(duplications => {
         for (let d of duplications) {
-          let node = new Node(d.id, '', 'purple');
+          let node = new Node(d.id, '', 'red', this.router);
           node.linkCount = d.getUris().length;
           this.nodes.push(node);
           for (let u of d.getUris()) {

@@ -4,7 +4,7 @@ import { Node } from '../../../d3';
 @Component({
   selector: '[nodeVisual]',
   template: `
-    <svg:g [attr.transform]="'translate(' + node.x + ',' + node.y + ')'">
+    <svg:g [attr.transform]="'translate(' + node.x + ',' + node.y + ')'" >
       <svg:circle
           class="node"
           [attr.fill]="node.color"
@@ -14,7 +14,8 @@ import { Node } from '../../../d3';
       </svg:circle>
       <svg:text
           class="node-name"
-          [attr.font-size]="node.fontSize">
+          [attr.font-size]="node.fontSize"
+          (click)="node.clicked()">
         {{node.content}}
       </svg:text>
     </svg:g>
