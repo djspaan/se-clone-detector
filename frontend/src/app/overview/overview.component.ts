@@ -10,9 +10,9 @@ import {Router} from "@angular/router";
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss']
 })
-export class OverviewComponent implements OnInit, OnDestroy {
+export class OverviewComponent implements OnInit {
   @ViewChild('graph') graph:ElementRef;
-  dtTrigger: Subject<any> = new Subject();
+
   classes: CompilationUnit[];
   nodes: Node[] = [];
   links: Link[] = [];
@@ -25,7 +25,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
       this.nodes = [];
       this.links = [];
       this.classes = classes;
-      this.dtTrigger.next();
       for (let c of this.classes) {
         let node = new Node(c.id, c.getName(), 'cyan', this.router);
         node.linkCount = c.duplications.length;
@@ -46,7 +45,5 @@ export class OverviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    this.dtTrigger.unsubscribe();
-  }
+
 }

@@ -3,8 +3,12 @@
   <hr>
   <div class="row">
     <div class="col-md-6">
+      <div><label>Lines: </label>{{ c.getContentLines().length }}</div>
+      <div><label>Clones: </label>{{ c.clones.length }}</div>
+      <div><label>Duplications: </label>{{ c.duplications.length }}</div>
       <div><label>Duplicate lines: </label>{{ c.getDuplicateLines() }}</div>
       <div><label>Duplicate percentage: </label>{{ c.getDuplicatePercentage() }}</div>
+      <hr>
       <div>
         <h5>Clones</h5>
         <div class="table-responsive">
@@ -27,9 +31,11 @@
               <!--&lt;!&ndash;<td><a [routerLink]="['/detail', c.loc.uri]">{{ c.getLoc().getUri() }}</a></td>&ndash;&gt;-->
               <!--<td>{{ d.getUris().join(", ") }}</td>-->
             </tr>
+            <tr *ngIf="!c.clones.length">No clones found</tr>
             </tbody>
           </table>
         </div>
+        <hr>
         <div>
           <h5>Duplications</h5>
           <div class="table-responsive">
@@ -46,6 +52,7 @@
                 <td>{{ d.type }}</td>
                 <td>{{ d.weight }}</td>
               </tr>
+              <tr *ngIf="!c.duplications.length">No duplications found</tr>
               </tbody>
             </table>
           </div>
