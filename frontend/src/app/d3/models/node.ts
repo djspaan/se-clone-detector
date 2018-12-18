@@ -37,6 +37,7 @@ export class Node implements d3.SimulationNodeDatum {
   }
 
   clicked() {
+    console.log('clicked');
     this.router.navigate(['detail', this.id]);
   }
 

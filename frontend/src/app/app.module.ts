@@ -16,6 +16,8 @@ import { DetailComponent } from './detail/detail.component';
 import {D3_DIRECTIVES, D3Service} from "./d3";
 import {GraphComponent} from "./visuals/graph/graph.component";
 import {SHARED_VISUALS} from "./visuals/shared";
+import { CompilationUnitComponent } from './detail/compilation-unit/compilation-unit.component';
+import { DuplicationComponent } from './detail/duplication/duplication.component';
 
 
 @NgModule({
@@ -27,7 +29,9 @@ import {SHARED_VISUALS} from "./visuals/shared";
     DetailComponent,
     GraphComponent,
     ...SHARED_VISUALS,
-    ...D3_DIRECTIVES
+    ...D3_DIRECTIVES,
+    CompilationUnitComponent,
+    DuplicationComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,58 @@
+<div *ngIf="class as c">
+  <h3>{{ c.getFullName() }}</h3>
+  <hr>
+  <div class="row">
+    <div class="col-md-6">
+      <div><label>Duplicate lines: </label>{{ c.getDuplicateLines() }}</div>
+      <div><label>Duplicate percentage: </label>{{ c.getDuplicatePercentage() }}</div>
+      <div>
+        <h5>Clones</h5>
+        <div class="table-responsive">
+          <table class="row-border hover">
+            <thead>
+            <tr>
+              <th>Name</th>
+              <th>Uri</th>
+              <!--<th>Type</th>-->
+              <!--<th>Weight</th>-->
+              <!--<th>Uri</th>-->
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let clone of c.clones">
+              <td>{{ clone.getName() }}</td>
+              <td>{{clone.loc.uri}}</td>
+              <!--<td>{{ d.type }}</td>-->
+              <!--<td>{{ d.weight }}</td>-->
+              <!--&lt;!&ndash;<td><a [routerLink]="['/detail', c.loc.uri]">{{ c.getLoc().getUri() }}</a></td>&ndash;&gt;-->
+              <!--<td>{{ d.getUris().join(", ") }}</td>-->
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <h5>Duplications</h5>
+          <div class="table-responsive">
+            <table class="row-border hover">
+              <thead>
+              <tr>
+                <th>Type</th>
+                <th>Weight</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let d of c.duplications">
+                <td>{{ d.type }}</td>
+                <td>{{ d.weight }}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <code>{{ c.content }}</code>
+    </div>
+  </div>
+</div>

@@ -10,12 +10,13 @@ import { Node } from '../../../d3';
           [attr.fill]="node.color"
           cx="0"
           cy="0"
-          [attr.r]="node.r">
+          [attr.r]="node.r"
+          (click)="node.clicked()">
       </svg:circle>
       <svg:text
           class="node-name"
           [attr.font-size]="node.fontSize"
-          (click)="node.clicked()">
+          >
         {{node.content}}
       </svg:text>
     </svg:g>

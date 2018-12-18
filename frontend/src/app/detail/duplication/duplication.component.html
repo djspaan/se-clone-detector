@@ -1,0 +1,13 @@
+<h1>Duplication</h1>
+<div class="container-fluid" style="">
+  <div class="row">
+    <div *ngIf="visualize" class="row flex-row flex-nowrap">
+      <div *ngFor="let c of clones" class="col-1" style="min-width: 80ch; max-width:80ch;">
+          <div class="card card-block"><p>{{ c.getFullName() }}</p>
+            <code *ngIf="c.content">{{ c.content }}</code>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+

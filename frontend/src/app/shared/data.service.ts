@@ -67,11 +67,19 @@ export class DataService {
     );
   }
 
-  byId(id: string): Observable<CompilationUnit> {
+  cuById(id: string): Observable<CompilationUnit> {
     return this.dataUnit.pipe(
       map( results => {
         return results.find(c => c.id === id);
       })
     );
+  }
+
+  duById(id: string): Observable<Duplication> {
+    return this.getDuplications().pipe(
+      map( results => {
+        return results.find(d => d.id === id);
+      })
+    )
   }
 }
