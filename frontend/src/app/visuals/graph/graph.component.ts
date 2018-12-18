@@ -1,4 +1,13 @@
-import { Component, Input, ChangeDetectorRef, HostListener, ChangeDetectionStrategy, OnInit, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  ChangeDetectorRef,
+  HostListener,
+  ChangeDetectionStrategy,
+  OnInit,
+  AfterViewInit,
+  OnDestroy
+} from '@angular/core';
 import { D3Service, ForceDirectedGraph, Node } from '../../d3';
 
 @Component({
@@ -15,7 +24,7 @@ import { D3Service, ForceDirectedGraph, Node } from '../../d3';
   `,
   styleUrls: ['./graph.component.css']
 })
-export class GraphComponent implements OnInit, AfterViewInit {
+export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input('nodes') nodes;
   @Input('links') links;
   graph: ForceDirectedGraph;
@@ -52,5 +61,9 @@ export class GraphComponent implements OnInit, AfterViewInit {
       width: window.innerWidth,
       height: window.innerHeight
     };
+  }
+
+  ngOnDestroy() {
+    this.graph.destroy();
   }
 }

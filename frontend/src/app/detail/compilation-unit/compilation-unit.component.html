@@ -52,7 +52,7 @@
       </div>
     </div>
     <div class="col-md-6">
-      <code>{{ c.content }}</code>
+      <pre *ngIf="c.content"><code [innerHTML]=" c.getMarkedContent() | keepHtml "></code></pre>
     </div>
   </div>
 </div>

@@ -1,1 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~highlight.js/styles/github.css';
+
+mark {
+  background:yellow;
+  color:gray;
+}
+
+mark span {
+  background:inherit;
+  color:inherit;
+}

@@ -18,7 +18,16 @@ import {GraphComponent} from "./visuals/graph/graph.component";
 import {SHARED_VISUALS} from "./visuals/shared";
 import { CompilationUnitComponent } from './detail/compilation-unit/compilation-unit.component';
 import { DuplicationComponent } from './detail/duplication/duplication.component';
+import { NotFoundComponent } from './not-found/not-found.component';
+import {HighlightModule, HighlightOptions} from 'ngx-highlightjs';
+import java from 'highlight.js/lib/languages/java';
+import {EscapeHtmlPipe, KeepHtmlPipe} from './pipes/keep-html.pipe';
 
+export function hljsLanguages() {
+  return [
+    {name: 'java', func: java}
+  ];
+}
 
 @NgModule({
   declarations: [
@@ -31,14 +40,19 @@ import { DuplicationComponent } from './detail/duplication/duplication.component
     ...SHARED_VISUALS,
     ...D3_DIRECTIVES,
     CompilationUnitComponent,
-    DuplicationComponent
+    DuplicationComponent,
+    NotFoundComponent,
+    EscapeHtmlPipe
   ],
   imports: [
     BrowserModule,
     NgbModule,
     HttpClientModule,
     AppRoutingModule,
-    DataTablesModule
+    DataTablesModule,
+    HighlightModule.forRoot({
+      languages: hljsLanguages
+    })
   ],
   providers: [
     DataService,

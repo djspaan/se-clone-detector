@@ -1,4 +1,4 @@
-import { EventEmitter } from '@angular/core';
+import {EventEmitter, OnDestroy} from '@angular/core';
 import { Link } from './link';
 import { Node } from './node';
 import * as d3 from 'd3';
@@ -9,7 +9,7 @@ const FORCES = {
   CHARGE: -1
 };
 
-export class ForceDirectedGraph {
+export class ForceDirectedGraph{
   public ticker: EventEmitter<d3.Simulation<Node, Link>> = new EventEmitter();
   public simulation: d3.Simulation<any, any>;
 
@@ -93,5 +93,9 @@ export class ForceDirectedGraph {
 
     /** Restarting the simulation internal timer */
     this.simulation.restart();
+  }
+
+  destroy(): void {
+    this.simulation.stop();
   }
 }

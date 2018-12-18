@@ -15,8 +15,8 @@ import CONFIG from "../app.config";
 })
 export class DataService {
   dataUnit: Observable<CompilationUnit[]>;
+  project = CONFIG.PROJECT;
   private url = "http://localhost:8082/";
-  private project = CONFIG.PROJECT;
 
   constructor(private http: HttpClient) { this.init(); }
 
@@ -64,6 +64,12 @@ export class DataService {
         let locs = d.locs.map(l => new Loc(l.fileUrl, l.fragmentUrl, l.uri, l.offset, l.length));
         return new Duplication('d' + i, d.type, d.weight, locs);
       }))
+    );
+  }
+
+  getProjects(): Observable<string[]> {
+    return this.http.get<string[]>(this.url + 'projects').pipe(
+      map((data: any) => Object.keys(data.projects))
     );
   }
 

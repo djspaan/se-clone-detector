@@ -45,4 +45,16 @@ export class CompilationUnit {
     return 0;
   }
 
+  getMarkedContent() : string {
+    let mc = this.content;
+    let locs = this.duplications.map(d => d.locs.filter(l => l.uri === this.loc.uri)).flat();
+    locs.sort((a,b) => a.offset - b.offset);
+    let count = 0;
+    for (let l of locs) {
+      mc = mc.substr(0, l.offset + count) + '<mark>' + mc.substr(l.offset + count); count += 6;
+      mc = mc.substr(0, l.offset + l.length + count) + '</mark>' + mc.substr(l.offset + l.length + count); count += 7;
+    }
+    return mc;
+  }
+
 }

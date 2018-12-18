@@ -21,6 +21,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.dataService.dataUnit.subscribe(classes => {
+      this.nodes = [];
+      this.links = [];
       this.classes = classes;
       this.dtTrigger.next();
       for (let c of this.classes) {
@@ -41,26 +43,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.visualize = true;
       });
     });
-
-    //
-    // const N = APP_CONFIG.N,
-    //   getIndex = number => number - 1;
-    //
-    // /** constructing the nodes array */
-    // for (let i = 1; i <= N; i++) {
-    //   this.nodes.push(new Node(i));
-    // }
-    //
-    // for (let i = 1; i <= N; i++) {
-    //   for (let m = 2; i * m <= N; m++) {
-    //     /** increasing connections toll on connecting nodes */
-    //     this.nodes[getIndex(i)].linkCount++;
-    //     this.nodes[getIndex(i * m)].linkCount++;
-    //
-    //     /** connecting the nodes before starting the simulation */
-    //     this.links.push(new Link(i, i * m));
-    //   }
-    // }
   }
 
   ngOnDestroy() {

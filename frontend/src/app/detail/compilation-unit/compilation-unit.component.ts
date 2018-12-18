@@ -4,15 +4,19 @@ import {Subject} from "rxjs/internal/Subject";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {CompilationUnit} from "../../shared/compilation-unit";
 import {switchMap} from "rxjs/operators";
+import {HighlightJS, HighlightModule} from "ngx-highlightjs";
 
 @Component({
   selector: 'app-compilation-unit',
   templateUrl: './compilation-unit.component.html',
-  styleUrls: ['./compilation-unit.component.scss']
+  styles: [require('highlight.js/styles/github.css')],
+  styleUrls: ['./compilation-unit.component.scss'],
+  imports: [HighlightModule]
 })
 export class CompilationUnitComponent implements OnInit {
   class: CompilationUnit;
   dtTrigger: Subject<any> = new Subject();
+  code: string;
 
   constructor(private route: ActivatedRoute, private router: Router, private dataService: DataService) { }
 
@@ -24,4 +28,5 @@ export class CompilationUnitComponent implements OnInit {
       this.dtTrigger.next();
     });
   }
+
 }

@@ -1,9 +1,13 @@
 <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
   <a class="navbar-brand col-sm-3 col-md-2 mr-0" routerLink="/">Clone Detector v0.1</a>
   <!--<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" #searchInput>-->
-  <!--<ul class="navbar-nav px-3">-->
-    <!--<li class="nav-item text-nowrap">-->
-      <!--&lt;!&ndash;<a class="nav-link" href="" (keypress)="onSearch()">Search</a>&ndash;&gt;-->
-    <!--</li>-->
-  <!--</ul>-->
+
+  <ul class="navbar-nav px-3">
+    <div ngbDropdown *ngIf="projects.length" class="d-inline-block">
+      <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Select project</button>
+      <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="position: absolute;">
+        <button class="dropdown-item" *ngFor="let project of projects" (click)="onAnalyze(project)">{{ project }}</button>
+      </div>
+    </div>
+  </ul>
 </nav>
