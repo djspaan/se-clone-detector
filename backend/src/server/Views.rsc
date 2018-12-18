@@ -42,7 +42,8 @@ Response viewClones(Request r){
 		path.uri = r.parameters["project"];
 		if(path.scheme == "project"){
 			set[Declaration] asts = createAstsFromEclipseProjectCached(path);
-			list[Clone] clones = uniqClones(type2OrderedClones(path, asts = asts)) + uniqClones(type1OrderedClones(path, asts = asts));
+			list[Clone] clones = uniqClones(type2OrderedClones(path, asts = asts))
+				 + uniqClones(type1OrderedClones(path, asts = asts));
 			value jsondata = serialize(clones);
 			return jsonResponse(ok(), DEFAULT_HEADERS, jsondata);
 		}

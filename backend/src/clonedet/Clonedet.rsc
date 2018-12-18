@@ -1,6 +1,7 @@
 module clonedet::Clonedet
 
 import clonedet::Canonize;
+import clonedet::Duplication;
 import lang::java::jdt::m3::AST;
 import Node;
 import List;
@@ -13,12 +14,15 @@ data Clone = clone(int \type, int weight, set[loc] locs);
 
 map[tuple[int, loc], map[value, set[loc]]] CACHE = ();
 
-list[Clone] type1OrderedClones(loc project, set[Declaration] asts = {}) = [];
+list[Clone] type1OrderedClones(loc project, set[Declaration] asts = {}){
+	dups =  getDuplicationsForAsts(asts);
+	return [clone(1, w, {l | <l, _> <- locs}) | <locs, w> <- getDuplicationsForAsts(asts)];
+}
 
 list[Clone] type2OrderedClones(loc project, set[Declaration] asts = {}){
 	m = type2LocationMapForProject(project, asts = asts);
 	locs = sort({<-treesize(k), m[k]> | k <- m, size(m[k]) > 1});
-	return [clone(2, -x, y) | <x, y> <- locs, -x > 1];
+	return [clone(2, -x, y) | <x, y> <- locs, -x > 2];
 }
 
 
@@ -41,15 +45,15 @@ map[value, set[loc]] type2LocationMapForProject(loc project, set[Declaration] as
 &T getdefault(map[&K, &T] m, &K k, &T def) = k in m ? m[k] : def; 
 
 
-map[value, set[loc]] astLocationMap(asts){
+map[value, set[loc]] astLocationMap(set[Declaration] asts){
 	map[value, set[loc]] lmap = ();
 	top-down visit(asts){
 		case Statement d:{
-			clean = unsetRec(d);
+			Statement clean = unsetRec(d);
 			lmap += (clean: getdefault(lmap, clean, {}) + {d.src});
 		}
 		case Declaration d:{
-			clean = unsetRec(d);
+			Declaration clean = unsetRec(d);
 			lmap += (clean: getdefault(lmap, clean, {}) + {d.src});
 		}
 	}
