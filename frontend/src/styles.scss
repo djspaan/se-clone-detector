@@ -1,9 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~highlight.js/styles/github.css';
 
-mark {
-  background:yellow;
+mark.type-1 {
+  background: rgba(255, 0, 0, 0.2);
   color:gray;
+}
+
+mark.type-2 {
+  background: rgba(0, 255, 0, 0.2);
+  color:gray;
+}
+
+mark.type-1.type-2 {
+  background: #ffffcc !important;
 }
 
 mark span {

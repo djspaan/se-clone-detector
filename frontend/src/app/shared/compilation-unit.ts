@@ -2,6 +2,10 @@ import {Loc} from './loc';
 import {Duplication} from "./duplication";
 import CONFIG from "../app.config";
 
+class LocWithType {
+  constructor(public loc: Loc, public type: number) {}
+}
+
 export class CompilationUnit {
   readonly id: string;
   readonly loc: Loc;
@@ -45,16 +49,28 @@ export class CompilationUnit {
     return 0;
   }
 
-  getMarkedContent() : string {
+  markContent(locs: LocWithType[]): string {
     let mc = this.content;
-    let locs = this.duplications.map(d => d.locs.filter(l => l.uri === this.loc.uri)).flat();
-    locs.sort((a,b) => a.offset - b.offset);
+    locs.sort((a,b) => a.loc.offset - b.loc.offset);
     let count = 0;
     for (let l of locs) {
-      mc = mc.substr(0, l.offset + count) + '<mark>' + mc.substr(l.offset + count); count += 6;
-      mc = mc.substr(0, l.offset + l.length + count) + '</mark>' + mc.substr(l.offset + l.length + count); count += 7;
+      let type = ['type-1','type-2'][l.type - 1];
+      mc = mc.substr(0, l.loc.offset + count) + '<mark class="' + type + '">' + mc.substr(l.loc.offset + count); count += 21;
+      mc = mc.substr(0, l.loc.offset + l.loc.length + count) + '</mark>' + mc.substr(l.loc.offset + l.loc.length + count); count += 7;
     }
     return mc;
+  }
+
+  getMarkedContent() : string {
+    let locs = this.duplications.map(d => d.locs.filter(l => l.uri === this.loc.uri).map(l => new LocWithType(l, d.type))).flat();
+    return this.markContent(locs);
+  }
+
+  getMarkedContentForDuplication(duplication: Duplication): string {
+    let locs = duplication.locs.filter(l => l.uri === this.loc.uri).flat();
+    locs = locs.map(l => new LocWithType(l, duplication.type));
+    console.log(locs);
+    return this.markContent(locs);
   }
 
 }

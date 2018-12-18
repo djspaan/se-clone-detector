@@ -20,7 +20,7 @@
             </thead>
             <tbody>
             <tr *ngFor="let clone of c.clones">
-              <td>{{ clone.getName() }}</td>
+              <td><a [routerLink]="['/detail', c.id]">{{ clone.getName() }}</a></td>
               <td>{{clone.loc.uri}}</td>
               <!--<td>{{ d.type }}</td>-->
               <!--<td>{{ d.weight }}</td>-->
@@ -42,6 +42,7 @@
               </thead>
               <tbody>
               <tr *ngFor="let d of c.duplications">
+                <td><a [routerLink]="['/detail', d.id]">{{ d.id }}</a></td>
                 <td>{{ d.type }}</td>
                 <td>{{ d.weight }}</td>
               </tr>

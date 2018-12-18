@@ -4,7 +4,7 @@
     <div *ngIf="visualize" class="row flex-row flex-nowrap">
       <div *ngFor="let c of clones" class="col-1" style="min-width: 80ch; max-width:80ch;">
           <div class="card card-block"><p class="title">{{ c.getFullName() }}</p>
-            <code *ngIf="c.content">{{ c.content }}</code>
+            <pre><code *ngIf="c.content" [innerHTML]=" c.getMarkedContentForDuplication(duplication) | keepHtml "></code></pre>
           </div>
       </div>
     </div>
