@@ -1,0 +1,29 @@
+<div *ngIf="classes.length">
+  <h3>Statistics</h3>
+  <div><label>% Duplicated lines: </label> {{ getPercentageDuplicatedLines() }}</div>
+  <div><label># Clones: </label> {{ getNumberOfClones() }}</div>
+  <div><label>Biggest clone # lines: </label><a [routerLink]="['detail', getBiggestClone()]"> {{ getBiggestClone().id }}</a></div>
+  <div><label>Biggest clone class: </label><a [routerLink]="['detail', getBiggestCloneClass()]"> {{ getBiggestCloneClass().getFullName() }}</a></div>
+
+  <hr>
+  <div class="table-responsive">
+    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Clones</th>
+        <th>Duplicate lines</th>
+        <th>Relative Duplication</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let c of classes">
+        <td><a [routerLink]="['/detail', c.id]">{{ c.getFullName() }}</a></td>
+        <td>{{ c.clones.length }}</td>
+        <td>{{ c.getDuplicateLines() }}</td>
+        <td>{{ c.getDuplicatePercentage() }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

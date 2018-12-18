@@ -21,7 +21,8 @@ import { DuplicationComponent } from './detail/duplication/duplication.component
 import { NotFoundComponent } from './not-found/not-found.component';
 import {HighlightModule, HighlightOptions} from 'ngx-highlightjs';
 import java from 'highlight.js/lib/languages/java';
-import {EscapeHtmlPipe, KeepHtmlPipe} from './pipes/keep-html.pipe';
+import {KeepHtmlPipe} from './pipes/keep-html.pipe';
+import { StatisticsComponent } from './statistics/statistics.component';
 
 export function hljsLanguages() {
   return [
@@ -42,7 +43,8 @@ export function hljsLanguages() {
     CompilationUnitComponent,
     DuplicationComponent,
     NotFoundComponent,
-    EscapeHtmlPipe
+    KeepHtmlPipe,
+    StatisticsComponent
   ],
   imports: [
     BrowserModule,

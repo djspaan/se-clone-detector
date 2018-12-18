@@ -62,12 +62,12 @@ export class CompilationUnit {
   }
 
   getMarkedContent() : string {
-    let locs = this.duplications.map(d => d.locs.filter(l => l.uri === this.loc.uri).map(l => new LocWithType(l, d.type))).flat();
+    let locs = (<any> this.duplications).map(d => d.locs.filter(l => l.uri === this.loc.uri).map(l => new LocWithType(l, d.type))).flat();
     return this.markContent(locs);
   }
 
   getMarkedContentForDuplication(duplication: Duplication): string {
-    let locs = duplication.locs.filter(l => l.uri === this.loc.uri).flat();
+    let locs = (<any> duplication.locs).filter(l => l.uri === this.loc.uri).flat();
     locs = locs.map(l => new LocWithType(l, duplication.type));
     console.log(locs);
     return this.markContent(locs);
